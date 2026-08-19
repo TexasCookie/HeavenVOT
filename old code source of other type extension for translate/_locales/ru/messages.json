@@ -1,0 +1,20 @@
+{
+  "extName": {
+    "message": "AetherVox — ИИ-перевод голоса в видео"
+  },
+  "extDescription": {
+    "message": "Перевод аудиодорожки любого видео и стрима в реальном времени на любой язык. Качество выше Яндекс-переводчика: контекст, синхронизация, live-стримы, японский→русский и health-monitor."
+  },
+  "cmdToggleTranslation": {
+    "message": "Вкл/выкл перевод"
+  },
+  "cmdToggleSubtitles": {
+    "message": "Вкл/выкл субтитры"
+  },
+  "cmdToggleOriginalMute": {
+    "message": "Заглушить/вернуть оригинал"
+  },
+  "cmdCycleTargetLang": {
+    "message": "Переключить язык перевода"
+  }
+}

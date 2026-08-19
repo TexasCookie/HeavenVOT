@@ -1,0 +1,11 @@
+models/
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.gguf
+.cache/
+.gateway.pid
+.gateway.autostart.log
+native_host_launcher.bat
+com.aethervox.local_gateway.json

@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+node_modules/
+
+native-host/com.lvt.host.installed.json
+
+# Downloaded weights (setup.ps1 / download_*.py)
+native-host/models/
+**/models/
+
+# Old extension runtime junk
+**/.media-cache/
+**/.vod-check/
+*.log
+*.err
+

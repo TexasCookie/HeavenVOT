@@ -1,0 +1,18 @@
+{
+  "voices": [
+    { "voice_id": "ara", "name": "Ara (local female)", "gender": "female", "language": "ru", "piper": "ru_RU-irina-medium", "note": "female → irina (never dmitri)" },
+    { "voice_id": "carina", "name": "Carina (local female)", "gender": "female", "language": "ru" },
+    { "voice_id": "luna", "name": "Luna (local female)", "gender": "female", "language": "ru" },
+    { "voice_id": "eve", "name": "Eve (local female)", "gender": "female", "language": "en" },
+    { "voice_id": "sal", "name": "Sal (local female)", "gender": "female", "language": "en" },
+    { "voice_id": "orion", "name": "Orion (local male)", "gender": "male", "language": "ru" },
+    { "voice_id": "zagan", "name": "Zagan (local male)", "gender": "male", "language": "ru" },
+    { "voice_id": "rex", "name": "Rex (local male)", "gender": "male", "language": "en" }
+  ],
+  "piperDefaults": {
+    "ru_female": "ru_RU-irina-medium",
+    "ru_male": "ru_RU-dmitri-medium",
+    "en_female": "en_US-lessac-medium",
+    "en_male": "en_US-ryan-medium"
+  }
+}

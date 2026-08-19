@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Local Video Translate",
+  "version": "0.3.7",
+  "description": "Local закадр for YouTube watch VOD.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2laT5/UjR/zxB8LtXiWXfXG3ZWxO4AM5zRdHTpcC+8bqxhaZ8OtrTrxKkQ9tFIM+60aE5J+0Ah6MqC8dLG+trsLkR4KQFGGU7EF/uyl5xpUoNHsSRCZ0sR9y7hxEFWMnL76K61qr+AaO12/04EW3eDtkUQM9Qm1DET9HAZUXEvKozwlen3MyRi4l+N4Mw9hCBWn6djhxd8UMojjF2Tcz7Roz9yOp90VKxJIQq7+6NwLfXILBJqW012gXm9wnEc7P7UM/THE/gpqcaA3fzHq688GCmX7/mK86LDmZnXFb4aj2SNY0EJic2/ndCQTtcr253aZbIWOSydHdTRjDUs/ZYQIDAQAB",
+  "permissions": ["nativeMessaging", "storage", "scripting", "cookies", "webRequest"],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://youtube.com/*",
+    "https://*.youtube.com/*",
+    "https://*.googlevideo.com/*",
+    "https://*.google.com/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "extension/background.js"
+  },
+  "action": {
+    "default_title": "Local Video Translate",
+    "default_popup": "extension/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*", "https://youtube.com/*"],
+      "js": ["extension/session-hook.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://www.youtube.com/*", "https://youtube.com/*"],
+      "js": ["extension/policy.js", "extension/mixer.js", "extension/player-button.js", "extension/captions.js", "extension/asr-audio.js", "extension/content.js"],
+      "css": ["extension/player-button.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["extension/injected.js", "extension/asr-audio.js", "extension/session-hook.js", "injected.js"],
+      "matches": ["https://www.youtube.com/*", "https://youtube.com/*"]
+    }
+  ]
+}

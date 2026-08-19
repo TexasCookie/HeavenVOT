@@ -1,0 +1,110 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "short_name": "AetherVox",
+  "version": "1.9.11",
+  "description": "__MSG_extDescription__",
+  "default_locale": "ru",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "alarms",
+    "notifications",
+    "contextMenus",
+    "proxy",
+    "webRequest",
+    "webRequestAuthProvider",
+    "declarativeNetRequestWithHostAccess",
+    "offscreen",
+    "webNavigation",
+    "nativeMessaging",
+    "cookies"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "https://api.x.ai/*",
+    "wss://api.x.ai/*",
+    "ws://*/*",
+    "wss://*/*",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background/av-sw.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "__MSG_extName__",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content-bootstrap.js"],
+      "css": ["content/overlay.css"],
+      "run_at": "document_idle",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content/*",
+        "lib/*",
+        "assets/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "toggle-translation": {
+      "suggested_key": {
+        "default": "Alt+Shift+T",
+        "windows": "Alt+Shift+T"
+      },
+      "description": "__MSG_cmdToggleTranslation__"
+    },
+    "toggle-subtitles": {
+      "suggested_key": {
+        "default": "Alt+Shift+S",
+        "windows": "Alt+Shift+S"
+      },
+      "description": "__MSG_cmdToggleSubtitles__"
+    },
+    "toggle-original-mute": {
+      "suggested_key": {
+        "default": "Alt+Shift+M",
+        "windows": "Alt+Shift+M"
+      },
+      "description": "__MSG_cmdToggleOriginalMute__"
+    },
+    "cycle-target-lang": {
+      "suggested_key": {
+        "default": "Alt+Shift+L",
+        "windows": "Alt+Shift+L"
+      },
+      "description": "__MSG_cmdCycleTargetLang__"
+    }
+  }
+}

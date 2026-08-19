@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AetherVox</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">AV</div>
+      <div class="brand">
+        <h1>AetherVox</h1>
+        <p class="sub" id="brandSub">Local / Grok · Live / VOD · TTS</p>
+      </div>
+      <span class="ver" id="extVer">1.9.11</span>
+    </header>
+
+    <!-- Auto API key window -->
+    <section class="card api-card" id="apiKeyPanel" hidden>
+      <div class="card-head">
+        <h2 class="card-title">API ключ xAI</h2>
+        <span class="pill err">нужен</span>
+      </div>
+      <p class="muted" style="margin-top: 0">
+        Вставь ключ с
+        <a href="https://console.x.ai/team/default/api-keys" target="_blank" rel="noreferrer"
+          >console.x.ai</a
+        >
+        — сохранится и проверится сразу.
+      </p>
+      <form id="apiKeyForm" autocomplete="off">
+        <label class="field">
+          XAI_API_KEY
+          <input id="apiKeyInput" name="xaiApiKey" type="password" placeholder="xai-..." autocomplete="off" />
+        </label>
+        <div class="row" style="gap: 8px; margin-top: 8px">
+          <button id="btnSaveKey" class="primary" type="submit">Сохранить ключ</button>
+          <button id="btnShowApiKey" type="button" class="ghost">Показать</button>
+        </div>
+        <p id="apiKeyStatus" class="muted"></p>
+      </form>
+    </section>
+
+    <!-- Live session status -->
+    <section class="card status-card" id="statusCard">
+      <div class="row between">
+        <span class="label">Сессия на вкладке</span>
+        <span id="tabStatus" class="pill">…</span>
+      </div>
+
+      <div class="pipe-row">
+        <span id="pipeBadge" class="pipe-badge pipe-auto">AUTO</span>
+        <span id="pipeDetail" class="pipe-detail">ожидание видео</span>
+      </div>
+
+      <div class="progress" id="progressWrap" hidden>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-meta">
+          <span id="progressLabel">VOD prepare…</span>
+          <span id="progressPct">0%</span>
+        </div>
+      </div>
+
+      <div class="telemetry" id="telemetry">
+        <div class="tel-item">
+          <span class="tel-k">Профиль</span>
+          <span class="tel-v" id="telProfile">—</span>
+        </div>
+        <div class="tel-item">
+          <span class="tel-k">Фразы</span>
+          <span class="tel-v" id="telCues">—</span>
+        </div>
+        <div class="tel-item">
+          <span class="tel-k">Stream</span>
+          <span class="tel-v" id="telStream">—</span>
+        </div>
+      </div>
+
+      <p id="tabDetail" class="muted url"></p>
+    </section>
+
+    <!-- Pipeline mode -->
+    <section class="card">
+      <div class="card-head">
+        <h2 class="card-title">Пайплайн</h2>
+      </div>
+      <p class="hint tight">
+        <strong>Авто</strong> — стрим → Live realtime; обычное видео → VOD полный банк (пауза → Play).
+      </p>
+      <div class="seg" role="group" aria-label="Режим">
+        <button type="button" class="seg-btn" data-mode="auto" id="modeAuto">Авто</button>
+        <button type="button" class="seg-btn" data-mode="live" id="modeLive">Live</button>
+        <button type="button" class="seg-btn" data-mode="vod" id="modeVod">VOD</button>
+      </div>
+      <div class="pipe-cards">
+        <div class="pipe-card live" id="cardLive">
+          <div class="pipe-card-title">Live realtime</div>
+          <div class="pipe-card-body">Только стримы · STT WS → clause MT → TTS · ~1.5–3s</div>
+        </div>
+        <div class="pipe-card vod" id="cardVod">
+          <div class="pipe-card-title">VOD prepare</div>
+          <div class="pipe-card-body">Пауза · полный банк фраз · sync по таймкодам</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <label class="field">
+        Язык источника
+        <select id="sourceLang"></select>
+      </label>
+      <label class="field">
+        Язык перевода
+        <select id="targetLang"></select>
+      </label>
+      <label class="field">
+        Голос (живые сверху)
+        <select id="voiceId"></select>
+      </label>
+      <label class="field">
+        Профиль качества
+        <select id="qualityProfile">
+          <option value="fast">Быстрый — мин. задержка</option>
+          <option value="balanced" selected>Баланс — live + чистый язык</option>
+          <option value="max">Максимум качества</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="card actions">
+      <button id="btnToggle" class="primary xl">Перевод вкл/выкл</button>
+      <div class="row actions-row">
+        <button id="btnSubs" type="button">Субтитры</button>
+        <button id="btnOptions" type="button" class="ghost">Все настройки</button>
+      </div>
+    </section>
+
+    <section class="card compact">
+      <label class="check">
+        <input type="checkbox" id="autoTranslate" />
+        Авто-перевод при открытии видео
+      </label>
+      <label class="check">
+        <input type="checkbox" id="autoSubtitles" checked />
+        Авто-субтитры
+      </label>
+      <label class="check">
+        <input type="checkbox" id="selfLearning" checked />
+        Самообучение перевода
+      </label>
+      <label class="check">
+        <input type="checkbox" id="preferNaturalVoice" checked />
+        Живые голоса по умолчанию
+      </label>
+      <label class="check">
+        <input type="checkbox" id="autoMatchVoiceGender" checked />
+        Авто-голос по типу автора
+      </label>
+      <p class="hint">
+        Hotkeys: Alt+Shift+T перевод · S субтитры · M mute · L язык
+      </p>
+    </section>
+
+    <footer>
+      <span id="footerPower">Local gateway / xAI Grok</span>
+      <a href="#" id="footerLink">Настройки</a>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

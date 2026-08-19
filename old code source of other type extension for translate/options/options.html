@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AetherVox — Настройки</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="nav" id="sideNav">
+        <div class="nav-brand">
+          <div class="logo">AV</div>
+          <div>
+            <div class="nav-title">AetherVox</div>
+            <div class="nav-ver" id="extVer">v1.9.11</div>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <a href="#sec-key" class="nav-link">1 · Провайдер</a>
+          <a href="#sec-pipe" class="nav-link">2 · Пайплайны</a>
+          <a href="#sec-voice" class="nav-link">3 · Голоса</a>
+          <a href="#sec-quality" class="nav-link">4 · Качество / Live</a>
+          <a href="#sec-economy" class="nav-link">5 · Токены MT</a>
+          <a href="#sec-audio" class="nav-link">6 · Громкость</a>
+          <a href="#sec-glossary" class="nav-link">7 · Глоссарий</a>
+          <a href="#sec-learn" class="nav-link">8 · Обучение</a>
+          <a href="#sec-net" class="nav-link">9 · Сеть / РФ</a>
+          <a href="#sec-reliab" class="nav-link">10 · Надёжность</a>
+        </nav>
+        <div class="nav-foot">
+          <span class="muted">Local gateway + LM Studio / xAI</span>
+        </div>
+      </aside>
+
+      <div class="wrap">
+        <header>
+          <div class="brand">
+            <div class="logo big">AV</div>
+            <div>
+              <h1>Настройки AetherVox</h1>
+              <p>
+                Два пайплайна: <strong class="c-live">Live realtime</strong> для стримов и
+                <strong class="c-vod">VOD prepare</strong> для обычных видео — плюс голоса,
+                токены, сеть из РФ.
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <section class="card" id="sec-key">
+          <h2>1. Провайдер <span class="req">Local / xAI</span></h2>
+          <p class="help">
+            <strong>Local</strong> (по умолчанию): STT + MT + TTS через шлюз
+            <code>127.0.0.1:8788</code> + LM Studio на <code>:1234</code> — без облака и без цензуры.
+            <strong>xAI</strong>: облачный Grok (ключ обязателен; облако может фильтровать контент).
+          </p>
+          <div class="grid2">
+            <label class="field">
+              Режим API
+              <select id="providerMode">
+                <option value="local">Local — шлюз + LM Studio (zero-censorship)</option>
+                <option value="xai">xAI cloud — api.x.ai</option>
+              </select>
+            </label>
+            <label class="field">
+              Local gateway base (/v1)
+              <input id="localBaseUrl" type="url" placeholder="http://127.0.0.1:8788/v1" />
+            </label>
+            <label class="field">
+              LM Studio model id
+              <input id="lmStudioModel" type="text" placeholder="auto (pick loaded abliterated)" />
+            </label>
+            <label class="field">
+              LM Studio base (chat proxy)
+              <input id="lmStudioBaseUrl" type="url" placeholder="http://127.0.0.1:1234/v1" />
+            </label>
+          </div>
+          <div class="row" style="margin-top: 10px">
+            <button id="btnValidateLocal" type="button">Проверить Local (STT/voices/MT)</button>
+            <button id="btnInstallGateway" type="button" class="ghost">Автозапуск шлюза (Native)</button>
+            <span id="localStatus" class="muted"></span>
+          </div>
+          <p id="localInstallHint" class="help" hidden style="margin-top: 8px; word-break: break-all"></p>
+          <hr style="margin: 16px 0; border: none; border-top: 1px solid #333" />
+          <h3>Ключ xAI <span class="muted">(только для режима xAI)</span></h3>
+          <p class="help">
+            Создай ключ на
+            <a href="https://console.x.ai/team/default/api-keys" target="_blank" rel="noreferrer"
+              >console.x.ai</a
+            >.
+          </p>
+          <form id="apiKeyForm" autocomplete="off">
+            <label class="field">
+              XAI_API_KEY
+              <input id="xaiApiKey" name="xaiApiKey" type="password" placeholder="xai-..." autocomplete="off" />
+            </label>
+            <div class="row">
+              <button id="btnShowKey" type="button" class="ghost">Показать</button>
+              <button id="btnValidate" type="button">Проверить ключ</button>
+              <button id="btnSaveKey" type="submit" class="primary">Сохранить ключ</button>
+              <span id="keyStatus" class="muted"></span>
+            </div>
+          </form>
+        </section>
+
+        <section class="card" id="sec-pipe">
+          <h2>2. Пайплайны перевода</h2>
+          <p class="help">
+            Это то, ради чего обновлялся движок. <strong>Обычные видео</strong> больше не
+            гоняются как live-стрим: готовится полный банк фраз (Yandex-style), и только потом
+            идёт синхрон. Стримы — низкая задержка, clause MT, WebSocket.
+          </p>
+
+          <div class="pipe-grid">
+            <article class="pipe-hero live">
+              <div class="pipe-hero-top">
+                <span class="tag live">LIVE</span>
+                <span class="pipe-hero-sub">realtime · стримы</span>
+              </div>
+              <h3>Live realtime</h3>
+              <ul>
+                <li>STT WebSocket (~100 ms PCM frames)</li>
+                <li>Partial MT по clauses до конца фразы</li>
+                <li>TTS WS · цель <strong>1.5–3s</strong> first-audio</li>
+                <li>SyncEngine + lag-shed + HealthMonitor</li>
+                <li>REST fallback если WS/auth падает</li>
+              </ul>
+            </article>
+            <article class="pipe-hero vod">
+              <div class="pipe-hero-top">
+                <span class="tag vod">VOD</span>
+                <span class="pipe-hero-sub">prepare · обычные видео</span>
+              </div>
+              <h3>VOD prepare</h3>
+              <ul>
+                <li>Скан аудиодорожки (ускоренный offline pass)</li>
+                <li>Параллельный STT → MT → TTS в банк cues</li>
+                <li>Прогресс в overlay / popup</li>
+                <li>Когда готово — озвучка по таймкодам (пауза до полного банка)</li>
+                <li>Не путать с live: realtime только для стримов</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="grid2" style="margin-top: 14px">
+            <label class="field">
+              Режим выбора пайплайна
+              <select id="mode">
+                <option value="auto">
+                  Авто — стрим → Live, обычное видео → VOD prepare
+                </option>
+                <option value="live">Всегда Live realtime (даже на VOD)</option>
+                <option value="vod">Всегда VOD prepare (скан → банк → готово)</option>
+              </select>
+            </label>
+            <label class="field">
+              Профиль качества
+              <select id="qualityProfile">
+                <option value="fast">Fast — мин. задержка (live)</option>
+                <option value="balanced">Balanced — live + чистый язык</option>
+                <option value="max">Max — макс. смысл (repair, дольше)</option>
+              </select>
+            </label>
+          </div>
+          <p class="help">
+            В popup и на плеере (кнопка AV) тот же переключатель <em>Авто / Live / VOD</em> и
+            live-индикаторы: badge пайплайна, прогресс prepare, latency stages.
+          </p>
+          <label class="check"
+            ><input type="checkbox" id="vodProgressive" /> Прогрессивный VOD (играть с 1-го
+            чанка; остальное догоняет). По умолчанию выкл. — пауза до полного банка.</label
+          >
+        </section>
+
+        <section class="card" id="sec-voice">
+          <h2>3. Языки и «живые» голоса</h2>
+          <p class="help">
+            По умолчанию natural/live-голоса (Ara, Carina, Luna…). Если API не отдаёт такой
+            голос — fallback на neural (Eve, Sal…).
+          </p>
+          <div class="grid2">
+            <label class="field">
+              Источник
+              <select id="sourceLang"></select>
+            </label>
+            <label class="field">
+              Цель (приоритет — русский)
+              <select id="targetLang"></select>
+            </label>
+            <label class="field">
+              Голос TTS
+              <select id="voiceId"></select>
+            </label>
+            <label class="field">
+              Скорость TTS: <span id="ttsSpeedVal">1.05</span>
+              <input id="ttsSpeed" type="range" min="0.7" max="1.5" step="0.05" value="1.05" />
+            </label>
+          </div>
+          <label class="check"
+            ><input type="checkbox" id="adaptiveTtsSpeed" checked /> Адаптивная скорость TTS
+            (ускорять озвучку при отставании от видео)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="continuousDubbing" checked /> Непрерывная озвучка
+            (overlap / без дыр между фразами)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="preferNaturalVoice" checked /> Всегда предпочитать
+            «живые» голоса (natural / live)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="autoMatchVoiceGender" checked /> Авто-выбор TTS по типу
+            голоса автора (бас…сопрано + F0) — без мисматча ♂/♀</label
+          >
+          <div class="grid2">
+            <label class="field">
+              Голос ♀ (если автор — женщина)
+              <select id="voiceIdFemale"></select>
+            </label>
+            <label class="field">
+              Голос ♂ (если автор — мужчина)
+              <select id="voiceIdMale"></select>
+            </label>
+          </div>
+          <label class="check"
+            ><input type="checkbox" id="expressiveSpeech" checked /> Выразительная речь
+            (паузы / natural prosody для TTS)</label
+          >
+          <div class="row">
+            <button id="btnRefreshVoices" type="button" class="ghost">Обновить список голосов</button>
+            <span id="voicesStatus" class="muted"></span>
+          </div>
+        </section>
+
+        <section class="card" id="sec-quality">
+          <h2>4. Live-детали и MT</h2>
+          <p class="help">
+            Эти флаги влияют в основном на <strong class="c-live">Live</strong>-путь. VOD
+            prepare всегда строит полный банк (параллельный fan-out).
+          </p>
+          <label class="check"
+            ><input type="checkbox" id="contextAware" checked /> Контекстный перевод (тайтл
+            видео, домен, история фраз)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="domainHints" checked /> Доменные подсказки (арт,
+            код, игры…)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="skipIfSourceIsTarget" checked /> Не переводить, если
+            язык уже целевой</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="partialSentenceTts" checked /> Partial TTS — озвучивать
+            по предложениям (быстрее first-audio)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="streamingPipeline" checked /> Streaming пайплайн —
+            STT WebSocket + partial MT по clauses + TTS (цель 1.5–3s; fallback REST)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="streamingTts" checked /> Streaming TTS WebSocket
+            (ниже TTFB; иначе REST TTS)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="partialClauseMt" checked /> Partial MT по clauses —
+            переводить готовые куски STT до конца фразы</label
+          >
+        </section>
+
+        <section class="card" id="sec-economy">
+          <h2>5. Экономия токенов API (MT)</h2>
+          <p class="help">
+            <strong>GlyphPack</strong> — пакует правила, глоссарий, историю и контекст в
+            плотную PNG (image-токены). Живая фраза (SRC) остаётся текстом. При сбоях —
+            fallback на <strong>Standard</strong>. Live по умолчанию — standard text (ниже RTT);
+            Glyph полезен для толстых offline-глоссариев / max.
+          </p>
+          <div class="grid2">
+            <label class="field">
+              Режим расхода токенов MT
+              <select id="tokenEconomyMode">
+                <option value="standard">
+                  Standard — text-токены (рекомендуется для live)
+                </option>
+                <option value="glyphpack">
+                  GlyphPack — картинка-контекст + fallback
+                </option>
+                <option value="auto">
+                  Auto — Glyph если стек жирный, иначе ultra-text
+                </option>
+              </select>
+            </label>
+          </div>
+          <div class="row" style="margin-top: 8px">
+            <button id="btnEconomyStats" type="button" class="ghost">Статистика GlyphPack</button>
+            <button id="btnEconomyReset" type="button" class="ghost">Сброс + resume Glyph</button>
+            <span id="economyStatus" class="muted"></span>
+          </div>
+        </section>
+
+        <section class="card" id="sec-audio">
+          <h2>6. Громкость и субтитры</h2>
+          <div class="grid2">
+            <label class="field">
+              Оригинал: <span id="originalVolumeVal">15%</span>
+              <input id="originalVolume" type="range" min="0" max="100" value="15" />
+            </label>
+            <label class="field">
+              Перевод: <span id="translationVolumeVal">100%</span>
+              <input id="translationVolume" type="range" min="0" max="100" value="100" />
+            </label>
+          </div>
+          <label class="check"
+            ><input type="checkbox" id="duckOriginal" checked /> Приглушать оригинал во время
+            фразы перевода</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="showOriginalSubs" checked /> Показывать исходные
+            субтитры</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="showTranslatedSubs" checked /> Показывать перевод
+            субтитрами</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="autoTranslate" /> Авто-старт перевода</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="autoSubtitles" checked /> Авто-субтитры</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="showOverlayButton" checked /> Кнопка AV на
+            плеере</label
+          >
+        </section>
+
+        <section class="card" id="sec-glossary">
+          <h2>7. Глоссарий, исключения и keyterms</h2>
+          <p class="help">
+            Keyterms — bias для STT. Глоссарий — принудительные пары. Исключения — слова,
+            которые <strong>нельзя переводить</strong> (бренды, имена, код). Самообучение
+            тоже пополняет эти списки.
+          </p>
+          <label class="field">
+            Keyterms (через запятую)
+            <input id="keyterms" type="text" placeholder="cube, sphere, pyramid, цилиндр" />
+          </label>
+          <label class="field">
+            Глоссарий (каждая строка: source = target)
+            <textarea id="glossary" rows="5" placeholder="cube = куб&#10;cone = конус"></textarea>
+          </label>
+          <label class="field">
+            Исключения / do-not-translate (через запятую или с новой строки)
+            <textarea
+              id="exceptions"
+              rows="3"
+              placeholder="OpenAI, Kubernetes, Eve, CUDA"
+            ></textarea>
+          </label>
+        </section>
+
+        <section class="card" id="sec-learn">
+          <h2>8. Самообучение перевода</h2>
+          <p class="help">
+            AetherVox запоминает термины и ошибочные переводы. Может авто-обновлять
+            устаревшие субтитры/озвучку, пока смотришь.
+          </p>
+          <label class="check"
+            ><input type="checkbox" id="selfLearning" checked /> Самообучение
+            (глоссарий + исключения)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="deepLearning" /> Deep-learn (LLM review) —
+            периодический разбор через локальную модель или Grok
+            (<strong>добавляет задержку</strong>, выкл. по умолчанию)</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="autoUpdateStaleTranslations" checked /> Авто-обновлять
+            устаревшие переводы при просмотре</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="promptApiKey" checked /> Показывать окно ввода API
+            ключа, если ключа нет</label
+          >
+          <div class="row" style="margin-top: 8px">
+            <button id="btnLearningStats" type="button" class="ghost">Статистика обучения</button>
+            <button id="btnResetLearning" type="button" class="ghost">Сбросить память</button>
+            <span id="learningStatus" class="muted"></span>
+          </div>
+        </section>
+
+        <section class="card" id="sec-net">
+          <h2>9. Связь из РФ / прокси</h2>
+          <p class="help">
+            По умолчанию — <strong>напрямую</strong> (системный VPN не трогаем). PAC
+            расширения только для <code>api.x.ai</code>. Режим <em>Авто</em> меряет RTT:
+            direct → HTTPS-relay → SOCKS/HTTP.
+          </p>
+          <div class="grid2">
+            <label class="field">
+              Режим сети
+              <select id="networkMode">
+                <option value="auto">Авто — min ping (рекомендуется)</option>
+                <option value="direct">Только direct (системный VPN)</option>
+                <option value="relay">Только HTTPS relay</option>
+                <option value="proxy">Только SOCKS/HTTP (PAC → xAI)</option>
+              </select>
+            </label>
+            <label class="field">
+              Предпочитать direct, если RTT ≤ мс
+              <input id="preferDirectMaxMs" type="number" min="200" max="5000" step="50" value="900" />
+            </label>
+          </div>
+          <label class="field">
+            HTTPS reverse-proxy / relay (база …/v1)
+            <input
+              id="apiRelayBase"
+              type="text"
+              placeholder="https://my-worker.example.workers.dev/v1  или  http://127.0.0.1:8787/v1"
+              autocomplete="off"
+            />
+          </label>
+          <p class="help">
+            Streaming WebSocket: ephemeral <code>client_secrets</code> →
+            <code>Sec-WebSocket-Protocol</code>, либо relay с <code>_av_key</code>. Relay
+            нужен если сеть режет <code>api.x.ai</code>:
+            <code>node tools/xai-relay-local.mjs</code> →
+            <code>http://127.0.0.1:8787/v1</code>.
+          </p>
+          <label class="field">
+            Доп. relays (по одному URL в строке, опционально)
+            <textarea
+              id="apiRelayList"
+              rows="2"
+              placeholder="https://relay-eu.example.com/v1&#10;https://relay-fi.example.com/v1"
+            ></textarea>
+          </label>
+          <div class="grid2">
+            <label class="field">
+              Тип прокси
+              <select id="proxyType">
+                <option value="socks5">SOCKS5 (VPN-клиенты, outline, v2ray…)</option>
+                <option value="socks4">SOCKS4</option>
+                <option value="http">HTTP</option>
+                <option value="https">HTTPS</option>
+              </select>
+            </label>
+            <label class="field">
+              Хост
+              <input id="proxyHost" type="text" placeholder="127.0.0.1" autocomplete="off" />
+            </label>
+            <label class="field">
+              Порт
+              <input id="proxyPort" type="number" min="1" max="65535" value="1080" />
+            </label>
+            <label class="field">
+              Логин (если есть)
+              <input id="proxyUser" type="text" name="proxyUser" placeholder="" autocomplete="off" />
+            </label>
+            <label class="field">
+              Пароль
+              <input id="proxyPass" type="password" name="proxyPass" placeholder="" autocomplete="off" />
+            </label>
+          </div>
+          <label class="field">
+            Список прокси (гонка за min ping, по одному в строке)
+            <textarea
+              id="proxyList"
+              rows="3"
+              placeholder="socks5://127.0.0.1:1080&#10;socks5://user:pass@eu.example:1080&#10;http://127.0.0.1:8080"
+            ></textarea>
+          </label>
+          <div class="row">
+            <button id="btnNetworkProbe" type="button" class="primary">Проверить пинг / выбрать путь</button>
+            <button id="btnNetworkClear" type="button" class="ghost">Сбросить PAC (системный VPN)</button>
+            <span id="networkStatus" class="muted"></span>
+          </div>
+        </section>
+
+        <section class="card" id="sec-reliab">
+          <h2>10. Надёжность</h2>
+          <label class="check"
+            ><input type="checkbox" id="notifyOnError" checked /> Уведомлять о сбое
+            перевода</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="notifyOnRecover" checked /> Уведомлять о
+            восстановлении</label
+          >
+          <label class="check"
+            ><input type="checkbox" id="debugLogs" /> Debug-логи в консоли</label
+          >
+        </section>
+
+        <section class="card why">
+          <h2>Почему это бьёт типичный Yandex / VOT-скрипт</h2>
+          <ul>
+            <li><strong>Два пайплайна</strong> — Live для стримов, VOD prepare для обычных видео (не «один костыль на всё»).</li>
+            <li><strong>Контекстный Grok</strong> — чинит ASR-омонимы по теме видео.</li>
+            <li><strong>SyncEngine</strong> — adaptive offset, skip лагов, без вечного рассинхрона.</li>
+            <li><strong>HealthMonitor</strong> — toast + notification + auto-recover.</li>
+            <li><strong>Streaming path</strong> — WS STT + clause MT + TTS, цель 1.5–3s first-audio.</li>
+            <li><strong>JP/KO/ZH/AR…</strong> — hard-pair промпты + keyterms + multilingual STT.</li>
+          </ul>
+        </section>
+
+        <div class="footer-actions">
+          <button id="btnSave" class="primary" type="button">Сохранить всё</button>
+          <span id="saveStatus" class="muted"></span>
+        </div>
+      </div>
+    </div>
+    <script src="force-reload.js"></script>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

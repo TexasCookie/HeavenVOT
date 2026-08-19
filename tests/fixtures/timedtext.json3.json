@@ -1,0 +1,6 @@
+{
+  "events": [
+    {"t": 0, "d": 1800, "segs": [{"utf8": "First line"}]},
+    {"t": 1800, "d": 2200, "segs": [{"utf8": "Second "}, {"utf8": "line"}]}
+  ]
+}

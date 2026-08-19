@@ -1,0 +1,41 @@
+{
+  "name": "AetherVox MT (zero-censorship)",
+  "description": "Inference preset matching lib/xai/translate.js prompts: fast spoken MT, no thinking, no safety refuse.",
+  "model": "Qwen2.5-7B-Instruct-abliterated.Q4_K_M.gguf",
+  "load": {
+    "contextLength": 8192,
+    "gpuOffload": "max",
+    "flashAttention": true,
+    "keepModelInMemory": true
+  },
+  "inference": {
+    "temperature": 0.15,
+    "top_p": 0.9,
+    "top_k": 40,
+    "min_p": 0.05,
+    "repeat_penalty": 1.05,
+    "presence_penalty": 0,
+    "frequency_penalty": 0,
+    "max_tokens": 200,
+    "reasoning": "off",
+    "thinking": false,
+    "mirostat": 0,
+    "stop": []
+  },
+  "safety": {
+    "contentFilter": false,
+    "refuseHarmful": false,
+    "jailbreakBlocker": false
+  },
+  "systemPromptHint": "AetherVox prompts are sent by the extension (system+user). Do not override with a moralizing system prompt in LM Studio.",
+  "qualityProfileTemps": {
+    "fast": 0.2,
+    "balanced": 0.15,
+    "max": 0.12
+  },
+  "notes": [
+    "Live path uses compact prompts + adaptive max_tokens (40-280).",
+    "Never enable thinking/reasoning — it destroys live RTT.",
+    "Use abliterated GGUF so the model does not refuse or euphemize."
+  ]
+}

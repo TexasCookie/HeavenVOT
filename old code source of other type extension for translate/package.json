@@ -1,0 +1,6 @@
+{
+  "name": "aethervox",
+  "private": true,
+  "type": "module",
+  "description": "Marks extension JS as ESM so Node self-tests can import lib/*.js"
+}

@@ -1,0 +1,21 @@
+#lvt-toggle.lvt-toggle {
+  position: absolute !important;
+  right: 12px !important;
+  bottom: 56px !important;
+  z-index: 2147483646 !important;
+  pointer-events: auto !important;
+  width: auto !important;
+  min-width: 88px !important;
+  height: 36px !important;
+  padding: 0 12px !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  text-indent: 0 !important;
+  font: 600 13px/36px Arial, sans-serif !important;
+  color: #111 !important;
+  background: #fff !important;
+  border: 0 !important;
+  border-radius: 18px !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}

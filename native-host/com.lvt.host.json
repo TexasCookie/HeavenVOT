@@ -1,0 +1,9 @@
+{
+  "name": "com.lvt.host",
+  "description": "Local Video Translate native host",
+  "path": "lvt_host.cmd",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://jmommfeoeeajjaekfgbknapfnibehgac/"
+  ]
+}

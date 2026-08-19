@@ -1,0 +1,20 @@
+{
+  "extName": {
+    "message": "AetherVox — AI Video Voice Translation"
+  },
+  "extDescription": {
+    "message": "Real-time voice-over translation for any video or live stream, any language pair. Built to beat Yandex-class quality: context, sync, streams, non-European languages, and health monitoring."
+  },
+  "cmdToggleTranslation": {
+    "message": "Toggle translation"
+  },
+  "cmdToggleSubtitles": {
+    "message": "Toggle subtitles"
+  },
+  "cmdToggleOriginalMute": {
+    "message": "Mute/unmute original audio"
+  },
+  "cmdCycleTargetLang": {
+    "message": "Cycle target language"
+  }
+}

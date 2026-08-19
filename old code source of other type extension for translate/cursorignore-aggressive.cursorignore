@@ -1,0 +1,108 @@
+# Token-saving ignore for Cursor (aggressive)
+# Copy to project root as .cursorignore and tweak per stack.
+
+# Dependencies
+node_modules/
+.pnpm-store/
+.npm-cache/
+.yarn/
+bower_components/
+vendor/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+site-packages/
+
+# Build / output
+dist/
+build/
+out/
+.target/
+.next/
+.nuxt/
+.svelte-kit/
+.astro/
+.output/
+.vercel/
+.netlify/
+coverage/
+*.tsbuildinfo
+*.min.js
+*.min.css
+*.map
+
+# Locks (huge, low signal for the agent)
+*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+Cargo.lock
+poetry.lock
+composer.lock
+bun.lock
+bun.lockb
+
+# Logs / temp / OS
+*.log
+logs/
+tmp/
+temp/
+.cache/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets (never index)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.*
+
+# Generated
+**/generated/
+**/__generated__/
+**/*.generated.*
+**/graphql.schema.json
+
+# Media / binaries (rarely useful as context)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.mp4
+*.mp3
+*.wav
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+*.pdf
+*.woff
+*.woff2
+*.ttf
+*.eot
+
+# VCS / IDE
+.git/
+.idea/
+.vscode/
+*.swp
+
+# Project-specific local data
+store/
+data/
+.nanoclaw/

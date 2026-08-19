@@ -1,0 +1,21 @@
+{
+  "videoDetails": {"lengthSeconds": "10"},
+  "captions": {
+    "playerCaptionsTracklistRenderer": {
+      "captionTracks": [
+        {
+          "baseUrl": "http://127.0.0.1/manual",
+          "languageCode": "en",
+          "kind": "",
+          "name": {"simpleText": "English"}
+        },
+        {
+          "baseUrl": "http://127.0.0.1/manual?tlang=ru",
+          "languageCode": "en",
+          "kind": "",
+          "name": {"simpleText": "Russian (auto-translated)"}
+        }
+      ]
+    }
+  }
+}
